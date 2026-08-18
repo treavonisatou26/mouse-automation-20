@@ -1,23 +1,32 @@
 import re
 
-def validate_click_interval(interval):
-    """Validates the click interval. Must be a positive float."""
-    if not isinstance(interval, (int, float)) or interval <= 0:
-        raise ValueError('Click interval must be a positive number.')
+def is_valid_email(email):
+    """Check if the given email is valid."""
+    email_regex = (r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    return re.match(email_regex, email) is not None
+
+
+def is_positive_integer(value):
+    """Check if the value is a positive integer."""
+    try:
+        num = int(value)
+        return num > 0
+    except (ValueError, TypeError):
+        return False
+
+
+def is_valid_delay(delay):
+    """Check if the delay value is a positive integer."""
+    return is_positive_integer(delay)
+
+
+def validate_configuration(config):
+    """Validate the provided configuration settings."""
+    errors = []
+    if not is_valid_email(config.get('email')):
+        errors.append('Invalid email address')
+    if not is_valid_delay(config.get('delay')):
+        errors.append('Delay must be a positive integer')
+    if errors:
+        raise ValueError('Configuration Errors: ' + ', '.join(errors))
     return True
-
-
-def validate_position(position):
-    """Validates mouse position. Must be a tuple of two integers."""
-    if not (isinstance(position, tuple) and len(position) == 2 and
-            all(isinstance(coord, int) for coord in position)):
-        raise ValueError('Position must be a tuple of two integers.')
-    return True
-
-
-def validate_click_count(count):
-    """Validates the number of clicks. Must be a positive integer."""
-    if not isinstance(count, int) or count <= 0:
-        raise ValueError('Click count must be a positive integer.')
-    return True
-
